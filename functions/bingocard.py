@@ -38,16 +38,5 @@ def print_bingo_card(bingo_card):
         print(" | ".join(row))
     print("\n")
 
-# Example usage
-is_adult = 1
-use_adjectives = 0
-use_verbs = 0
-use_nouns = 1
-board_size = 5
-
-bingo_card = generate_bingo_card(is_adult, use_adjectives, use_verbs, use_nouns, board_size)
-print_bingo_card(bingo_card)
-
-if __name__ == "__main__":
-    bingo_card = generate_bingo_card(1, 1, 1, 0, 5)
-    print_bingo_card(bingo_card)
+def ez_bingo_card() -> list[list[str]]:
+    return generate_bingo_card(1, 1, 1, 0, 5)

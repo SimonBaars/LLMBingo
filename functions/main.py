@@ -4,10 +4,11 @@
 
 from firebase_functions import https_fn
 from firebase_admin import initialize_app
+from bingocard import ez_bingo_card
 
-# initialize_app()
-#
-#
-# @https_fn.on_request()
-# def on_request_example(req: https_fn.Request) -> https_fn.Response:
-#     return https_fn.Response("Hello world!")
+initialize_app()
+
+@https_fn.on_request()
+def on_request_example(req: https_fn.Request) -> https_fn.Response:
+    bingo_card = ez_bingo_card()
+    return https_fn.Response(json=bingo_card)
