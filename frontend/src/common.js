@@ -19,7 +19,7 @@ export async function fetchJson(url, callback) {
 
 export function getUrl(url) {
   if (window.location.hostname === "localhost") {
-    url = "http://127.0.0.1:5001/llmbingo/europe-west1/api" + url;
+    url = "http://127.0.0.1:5001/llmbingo/us-central1/" + url;
   }
   return url;
 }

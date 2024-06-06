@@ -1,0 +1,2 @@
+export FUNCTIONS_EMULATOR_TIMEOUT_SECONDS=540
+firebase emulators:start

@@ -9,6 +9,6 @@ from bingocard import ez_bingo_card
 initialize_app()
 
 @https_fn.on_request()
-def on_request_example(req: https_fn.Request) -> https_fn.Response:
+def card(req: https_fn.Request) -> https_fn.Response:
     bingo_card = ez_bingo_card()
     return https_fn.Response(json=bingo_card)
