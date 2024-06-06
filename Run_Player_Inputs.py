@@ -22,7 +22,8 @@ def get_game_state(file_path=config['GAME_STATE_FILE']):
     if not os.path.exists(file_path):
         initial_state = {
             "round_number": 1,
-            "history": []
+            "history": [],
+            "archive": []
         }
         with open(file_path, 'w') as f:
             json.dump(initial_state, f, indent=4)
@@ -42,10 +43,10 @@ def get_gpt4_response(messages):
         model="gpt-4o",  # Ensure this model version is correct
         messages=messages,
         temperature=1,
-        max_tokens=256,
+        max_tokens=300,
         top_p=1,
-        frequency_penalty=0.2,
-        presence_penalty=0
+        frequency_penalty=0.1,
+        presence_penalty=0.1
     )
     response_content = completion.choices[0].message.content
     return response_content
@@ -55,18 +56,31 @@ def main():
     round_number = game_state["round_number"]
     
     input_text = input("Enter your input text: ")
+    user_message = f"(Round #{round_number}) {input_text}"
+    
+    system_prompt = config['STARTING_PROMPT']
     
     if round_number == 1:
-        system_prompt = config['STARTING_PROMPT']
-        messages = [{"role": "system", "content": system_prompt}, {"role": "user", "content": input_text}]
+        messages = [{"role": "system", "content": system_prompt}, {"role": "user", "content": user_message}]
         game_state["history"].append(f"system: {system_prompt}")  # Include initial system prompt in the history
     else:
-        previous_history = "\n".join(game_state["history"])
-        history_prompt = f"{config['HISTORY_PROMPT']}\n{previous_history}"
-        messages = [{"role": "system", "content": history_prompt}, {"role": "user", "content": input_text}]
+        messages = [
+            {"role": "system", "content": system_prompt}
+        ] + [
+            {"role": "user", "content": msg.split(":", 1)[1].strip()} if msg.startswith("user:") else {"role": "assistant", "content": msg.split(":", 1)[1].strip()} 
+            for msg in game_state["history"]
+        ] + [
+            {"role": "user", "content": user_message}
+        ]
     
     response = get_gpt4_response(messages)
-    game_state["history"].append(f"user: {input_text}")
+    
+    # Archive the oldest user-GPT pair if more than 4 messages in history
+    if len(game_state["history"]) > 3:
+        game_state["archive"].extend(game_state["history"][:2])
+        game_state["history"] = game_state["history"][2:]
+    
+    game_state["history"].append(f"user: {user_message}")
     game_state["history"].append(f"gpt: {response}")
     game_state["round_number"] += 1
     
@@ -76,4 +90,3 @@ def main():
 
 if __name__ == "__main__":
     main()
-
