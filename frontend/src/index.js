@@ -7,6 +7,7 @@ import Bingo from './Bingo';
 const GlobalStyle = createGlobalStyle`
   body {
     font-family: Verdana, sans-serif;
+    margin: 0;
   }
 `;
 

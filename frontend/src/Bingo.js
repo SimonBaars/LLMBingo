@@ -1,5 +1,5 @@
 import React, { useState, useEffect } from 'react';
-import { Button, TextField, Container, Typography, CircularProgress, Box, Grid } from '@mui/material';
+import { Button, TextField, Container, Typography, CircularProgress, Box, Grid, Paper } from '@mui/material';
 import { updateRequest, fetchJson } from './common';
 
 export default function Bingo() {
@@ -33,12 +33,14 @@ export default function Bingo() {
   return (
     <Container sx={{ height: '100vh', display: 'flex', flexDirection: 'column', justifyContent: 'center' }}>
       <Box sx={{ overflow: 'auto', flexGrow: 1 }}>
-        <Grid container justifyContent="center">
+        <Grid container justifyContent="center" spacing={2}>
           {card.map((row, i) => (
             <Grid key={i} container item xs={12} justifyContent="center">
               {row.map((cell, j) => (
-                <Grid key={j} item>
-                  <Typography>{cell}</Typography>
+                <Grid key={j} item xs>
+                  <Paper elevation={3} sx={{ padding: 2, textAlign: 'center' }}>
+                    <Typography>{cell}</Typography>
+                  </Paper>
                 </Grid>
               ))}
             </Grid>
