@@ -10,6 +10,7 @@ export default function Bingo() {
   const [matched, setMatched] = useState(JSON.parse(localStorage.getItem('matched')) || []);
   const [text, setText] = useState('');
   const [attempts, setAttempts] = useState(JSON.parse(localStorage.getItem('attempts')) || 0);
+  const [finishedState, setFinishedState] = useState(false);
 
   useEffect(() => {
     if (!card.length) {
@@ -23,7 +24,7 @@ export default function Bingo() {
     }
   }, [card]);
 
-  const handleSend = async (e) => {
+  const handleSend = (e) => {
     if (!message)
       return;
     e.preventDefault();
@@ -52,8 +53,32 @@ export default function Bingo() {
       setText(res);
     });
   };
+  const totalCards = card.flat().length;
+  const nFound = matched.flat().filter(Boolean).length;
+  const score = ((nFound + 1) * 100) - attempts;
 
-  const score = ((matched.flat().filter(Boolean).length + 1) * 100) - attempts;
+  const finishGame = () => {
+    setLoading(true);
+    const name = prompt('Enter your name for the leaderboard:');
+    if (!name) {
+      setLoading(false);
+      return;
+    }
+    updateRequest('score', { score, name }, (response) => {
+      setLoading(false);
+      setFinishedState(true);
+      localStorage.clear();
+      setText(`Congratulations on finding ${nFound} out of ${totalCards} cards! Your score is ${score}.\n\nCurrent leaderboard:\n${response.map((entry, i) => `${i + 1}. ${entry.name} - ${entry.score}`).join('\n')}`);
+    });
+  };
+
+  const newGame = () => {
+    setCard([]);
+    setMatched([]);
+    setAttempts(0);
+    setFinishedState(false);
+    setText('');
+  };
 
   return (
     <Container sx={{ height: '100vh', display: 'flex', flexDirection: 'column', justifyContent: 'center' }}>
@@ -67,7 +92,9 @@ export default function Bingo() {
           <Typography variant="subtitle1">Score</Typography>
         </Box>
         <Box sx={{ display: 'flex', flexDirection: 'column', alignItems: 'center', margin: 2 }}>
-          <Button variant="contained" color="primary" disabled={!matched.flat().includes(true)}>Finish</Button>
+          {finishedState ? 
+          (<Button variant="contained" color="primary" onClick={newGame}>New Game</Button>) :
+          (<Button variant="contained" color="primary" disabled={!matched.flat().includes(true)} onClick={finishGame}>Finish</Button>)}
         </Box>
       </Box>
       <Box sx={{ overflow: 'auto', flexGrow: 1 }}>
@@ -101,12 +128,12 @@ export default function Bingo() {
           </Box>
         }
       </Box>
-      <Box sx={{ display: 'flex', alignItems: 'center' }}>
+      {!finishedState && (<Box sx={{ display: 'flex', alignItems: 'center' }}>
         <TextField label="Enter a prompt..." value={message} onChange={(e) => setMessage(e.target.value)} fullWidth required multiline rows={4}/>
         <Button type="submit" variant="contained" color="primary" disabled={loading} onClick={handleSend}>
           {loading ? <CircularProgress size={24} /> : 'Send'}
         </Button>
-      </Box>
+      </Box>)}
     </Container>
   );
 }
