@@ -143,8 +143,8 @@ export default function Bingo() {
           </Box>
         }
       </Box>
-      {!finishedState && (<Box sx={{ display: 'flex', alignItems: 'center' }}>
-        <TextField label="Enter a prompt..." value={message} onChange={(e) => setMessage(e.target.value)} fullWidth required multiline rows={4}/>
+      {!finishedState && (<Box sx={{ display: 'flex', alignItems: 'center', mb: 1 }}>
+        <TextField label="Enter a prompt..." value={message} onChange={(e) => setMessage(e.target.value)} fullWidth required multiline rows={2} inputProps={{ maxLength: 150 }} sx={{mr:1}}/>
         <Button type="submit" variant="contained" color="primary" disabled={loading} onClick={handleSend}>
           {loading ? <CircularProgress size={24} /> : 'Send'}
         </Button>
