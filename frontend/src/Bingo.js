@@ -1,4 +1,4 @@
-import React, { useState, useEffect } from 'react';
+import React, { useState, useEffect, useCallback } from 'react';
 import { Button, TextField, Container, Typography, CircularProgress, Box, Grid, Paper } from '@mui/material';
 import { updateRequest, fetchJson } from './common';
 import Typewriter from 'typewriter-effect';
@@ -59,11 +59,11 @@ export default function Bingo() {
       setText(res);
     });
   };
-  const totalCards = card.flat().length;
-  const nFound = matched.flat().filter(Boolean).length;
-  const score = ((nFound + 1) * 100) - attempts;
-
-  const finishGame = () => {
+  
+  const finishGame = useCallback(() => {
+    const totalCards = card.flat().length;
+    const nFound = matched.flat().filter(Boolean).length;
+    const score = ((nFound + 1) * 100) - attempts;
     setLoading(true);
     const name = prompt('Enter your name for the leaderboard:');
     if (!name) {
@@ -76,7 +76,13 @@ export default function Bingo() {
       localStorage.clear();
       setText(`Congratulations on finding ${nFound} out of ${totalCards} cards! Your score is ${score}.\n\nCurrent leaderboard:\n${response.scores.map((entry, i) => `${i + 1}. ${entry.name} - ${entry.score}`).join('\n')}`);
     });
-  };
+  }, [card, matched, attempts]);
+
+  useEffect(() => {
+    if (!matched.flat().includes(false)) {
+      finishGame();
+    }
+  }, [matched, finishGame]);
 
   const newGame = () => {
     setCard([]);
@@ -85,6 +91,9 @@ export default function Bingo() {
     setFinishedState(false);
     setText('');
   };
+
+  const nFound = matched.flat().filter(Boolean).length;
+  const score = ((nFound + 1) * 100) - attempts;
 
   return (
     <Container sx={{ height: '100vh', display: 'flex', flexDirection: 'column', justifyContent: 'center' }}>
