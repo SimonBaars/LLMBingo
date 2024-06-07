@@ -7,6 +7,7 @@ export default function Bingo() {
   const [message, setMessage] = useState('');
   const [loading, setLoading] = useState(false);
   const [card, setCard] = useState(JSON.parse(localStorage.getItem('card')) || []);
+  const [matched, setMatched] = useState(JSON.parse(localStorage.getItem('matched')) || []);
   const [text, setText] = useState('');
 
   useEffect(() => {
@@ -14,6 +15,9 @@ export default function Bingo() {
       fetchJson('card', (response) => {
         localStorage.setItem('card', JSON.stringify(response));
         setCard(response);
+        const initialMatched = response.map(row => row.map(() => false));
+        localStorage.setItem('matched', JSON.stringify(initialMatched));
+        setMatched(initialMatched);
       });
     }
   }, [card]);
@@ -42,7 +46,7 @@ export default function Bingo() {
             <Grid key={i} container item xs={12} justifyContent="center">
               {row.map((cell, j) => (
                 <Grid key={j} item xs>
-                  <Paper elevation={3} sx={{ padding: 2, textAlign: 'center' }}>
+                  <Paper elevation={3} sx={{ padding: 2, textAlign: 'center', backgroundColor: matched[i][j] ? 'lightorange' : 'white' }}>
                     <Typography>{cell}</Typography>
                   </Paper>
                 </Grid>
