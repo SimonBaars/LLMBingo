@@ -53,8 +53,23 @@ export default function Bingo() {
     });
   };
 
+  const score = ((matched.flat().filter(Boolean).length + 1) * 100) - attempts;
+
   return (
     <Container sx={{ height: '100vh', display: 'flex', flexDirection: 'column', justifyContent: 'center' }}>
+      <Box sx={{ display: 'flex', flexDirection: { sm: 'row' }, justifyContent: 'space-around', alignItems: 'center', marginBottom: 2 }}>
+        <Box sx={{ display: 'flex', flexDirection: 'column', alignItems: 'center', margin: 2 }}>
+          <Typography variant="h4">{attempts}</Typography>
+          <Typography variant="subtitle1">Attempts</Typography>
+        </Box>
+        <Box sx={{ display: 'flex', flexDirection: 'column', alignItems: 'center', margin: 2 }}>
+          <Typography variant="h4">{score}</Typography>
+          <Typography variant="subtitle1">Score</Typography>
+        </Box>
+        <Box sx={{ display: 'flex', flexDirection: 'column', alignItems: 'center', margin: 2 }}>
+          <Button variant="contained" color="primary" disabled={!matched.flat().includes(true)}>Finish</Button>
+        </Box>
+      </Box>
       <Box sx={{ overflow: 'auto', flexGrow: 1 }}>
         <Grid container justifyContent="center" spacing={2}>
           {card.map((row, i) => (
@@ -77,12 +92,12 @@ export default function Bingo() {
         {text && 
           <Box sx={{ display: 'flex', justifyContent: 'center', alignItems: 'center', margin: 2 }}>
             <Typography variant="h5" sx={{fontWeight: 500}}><Typewriter
-  options={{
-    strings: text,
-    autoStart: true,
-    delay: 20,
-  }}
-/></Typography>
+              options={{
+                strings: text,
+                autoStart: true,
+                delay: 20,
+              }}
+            /></Typography>
           </Box>
         }
       </Box>
