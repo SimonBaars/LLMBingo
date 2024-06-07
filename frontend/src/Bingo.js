@@ -27,6 +27,11 @@ export default function Bingo() {
   const handleSend = (e) => {
     if (!message)
       return;
+    const sanitizedMessage = message.toLowerCase().replace(/\s/g, '');
+    if(card.some(row => row.some(cell => sanitizedMessage.includes(cell.toLowerCase())))) {
+      setText('Sneaky, but no. You cannot use any of the words on the bingo card as a prompt!');
+      return;
+    }
     e.preventDefault();
     setLoading(true);
     updateRequest('prompt', { prompt: message }, (response) => {
