@@ -1,13 +1,13 @@
 import React, { useState, useEffect } from 'react';
 import { Button, TextField, Container, Typography, CircularProgress, Box, Grid, Paper } from '@mui/material';
 import { updateRequest, fetchJson } from './common';
+import Typewriter from 'typewriter-effect';
 
 export default function Bingo() {
-  const [name, setName] = useState(localStorage.getItem('name') || '');
-  const [introduction, setIntroduction] = useState(localStorage.getItem('introduction') || '');
   const [message, setMessage] = useState('');
   const [loading, setLoading] = useState(false);
   const [card, setCard] = useState(JSON.parse(localStorage.getItem('card')) || []);
+  const [text, setText] = useState('');
 
   useEffect(() => {
     if (!card.length) {
@@ -23,10 +23,14 @@ export default function Bingo() {
       return;
     e.preventDefault();
     setLoading(true);
-    updateRequest('/prompt', { text: message, name }, (response) => {
+    updateRequest('prompt', { prompt: message }, (response) => {
       setLoading(false);
       setMessage('');
-      setCard(response);
+      if(!response.text) {
+        alert('Something failed, try again :(');
+        return;
+      }
+      setText(response.text);
     });
   };
 
@@ -46,7 +50,22 @@ export default function Bingo() {
             </Grid>
           ))}
         </Grid>
-        {loading && <CircularProgress />}
+        {loading && 
+          <Box sx={{ display: 'flex', justifyContent: 'center', alignItems: 'center', margin: 2 }}>
+            <CircularProgress />
+          </Box>
+        }
+        {text && 
+          <Box sx={{ display: 'flex', justifyContent: 'center', alignItems: 'center', margin: 2 }}>
+            <Typography variant="h5" sx={{fontWeight: 500}}><Typewriter
+  options={{
+    strings: text,
+    autoStart: true,
+    delay: 20,
+  }}
+/></Typography>
+          </Box>
+        }
       </Box>
       <Box sx={{ display: 'flex', alignItems: 'center' }}>
         <TextField label="Enter a prompt..." value={message} onChange={(e) => setMessage(e.target.value)} fullWidth required multiline rows={4}/>
