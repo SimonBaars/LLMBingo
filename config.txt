@@ -1,4 +1,0 @@
-API_KEY=placeholder
-GAME_STATE_FILE=game_state.json
-STARTING_PROMPT=You are a helpful assistant.
-HISTORY_PROMPT=Here is the message history for your conversation so far:

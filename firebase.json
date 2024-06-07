@@ -25,6 +25,14 @@
     ],
     "rewrites": [
       {
+        "source": "/card/**",
+        "function": "card"
+      },
+      {
+        "source": "/prompt/**",
+        "function": "prompt"
+      },
+      {
         "source": "**",
         "destination": "/index.html"
       }

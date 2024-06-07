@@ -39,4 +39,4 @@ def print_bingo_card(bingo_card):
     print("\n")
 
 def ez_bingo_card() -> list[list[str]]:
-    return generate_bingo_card(1, 1, 1, 0, 5)
+    return generate_bingo_card(False, False, False, True, 3)
