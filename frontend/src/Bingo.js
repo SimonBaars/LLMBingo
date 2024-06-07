@@ -79,7 +79,7 @@ export default function Bingo() {
   }, [card, matched, attempts]);
 
   useEffect(() => {
-    if (!matched.flat().includes(false)) {
+    if (matched.flat().length === 9 && !matched.flat().includes(false)) {
       finishGame();
     }
   }, [matched, finishGame]);
