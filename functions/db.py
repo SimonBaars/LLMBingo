@@ -18,7 +18,7 @@ def add_score(name, score):
 def get_scores():
     db = get_firestore()
     scores = db.collection('scoreboard').order_by('score', direction=firestore.Query.DESCENDING).limit(10).stream()
-    return scores
+    return [score.to_dict() for score in scores]
 
 def add_and_get_scores(name, score):
     add_score(name, score)

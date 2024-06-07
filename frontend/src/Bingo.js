@@ -32,6 +32,7 @@ export default function Bingo() {
     updateRequest('prompt', { prompt: message }, (response) => {
       setLoading(false);
       setMessage('');
+      localStorage.setItem('attempts', attempts + 1);
       setAttempts(prevAttempts => prevAttempts + 1);
       const res = response.text;
       if(!res) {
@@ -68,7 +69,7 @@ export default function Bingo() {
       setLoading(false);
       setFinishedState(true);
       localStorage.clear();
-      setText(`Congratulations on finding ${nFound} out of ${totalCards} cards! Your score is ${score}.\n\nCurrent leaderboard:\n${response.map((entry, i) => `${i + 1}. ${entry.name} - ${entry.score}`).join('\n')}`);
+      setText(`Congratulations on finding ${nFound} out of ${totalCards} cards! Your score is ${score}.\n\nCurrent leaderboard:\n${response.scores.map((entry, i) => `${i + 1}. ${entry.name} - ${entry.score}`).join('\n')}`);
     });
   };
 
@@ -118,7 +119,7 @@ export default function Bingo() {
         }
         {text && 
           <Box sx={{ display: 'flex', justifyContent: 'center', alignItems: 'center', margin: 2 }}>
-            <Typography variant="h5" sx={{fontWeight: 500}}><Typewriter
+            <Typography variant="h5" sx={{fontWeight: 500, whiteSpace: "pre-line"}}><Typewriter
               options={{
                 strings: text,
                 autoStart: true,
