@@ -33,6 +33,10 @@
         "function": "prompt"
       },
       {
+        "source": "/score/**",
+        "function": "score"
+      },
+      {
         "source": "**",
         "destination": "/index.html"
       }
