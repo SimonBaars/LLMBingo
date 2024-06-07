@@ -9,6 +9,7 @@ export default function Bingo() {
   const [card, setCard] = useState(JSON.parse(localStorage.getItem('card')) || []);
   const [matched, setMatched] = useState(JSON.parse(localStorage.getItem('matched')) || []);
   const [text, setText] = useState('');
+  const [attempts, setAttempts] = useState(JSON.parse(localStorage.getItem('attempts')) || 0);
 
   useEffect(() => {
     if (!card.length) {
@@ -30,11 +31,25 @@ export default function Bingo() {
     updateRequest('prompt', { prompt: message }, (response) => {
       setLoading(false);
       setMessage('');
-      if(!response.text) {
+      setAttempts(prevAttempts => prevAttempts + 1);
+      const res = response.text;
+      if(!res) {
         alert('Something failed, try again :(');
         return;
       }
-      setText(response.text);
+
+      const lowerCaseResponse = res.toLowerCase();
+      const newMatched = [...matched];
+      for (let i = 0; i < card.length; i++) {
+        for (let j = 0; j < card[i].length; j++) {
+          if (lowerCaseResponse.includes(card[i][j].toLowerCase())){
+            newMatched[i][j] = true;
+          }
+        }
+      }
+      localStorage.setItem('matched', JSON.stringify(newMatched));
+      setMatched(newMatched);
+      setText(res);
     });
   };
 
@@ -46,7 +61,7 @@ export default function Bingo() {
             <Grid key={i} container item xs={12} justifyContent="center">
               {row.map((cell, j) => (
                 <Grid key={j} item xs>
-                  <Paper elevation={3} sx={{ padding: 2, textAlign: 'center', backgroundColor: matched[i][j] ? 'lightorange' : 'white' }}>
+                  <Paper elevation={3} sx={{ padding: 2, textAlign: 'center', background: matched[i][j] ? '#bbff9c' : 'white' }}>
                     <Typography>{cell}</Typography>
                   </Paper>
                 </Grid>
